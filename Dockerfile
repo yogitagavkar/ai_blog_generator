@@ -1,6 +1,6 @@
 FROM php:8.4-cli
 
-# System packages
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -11,33 +11,32 @@ RUN apt-get update && apt-get install -y \
     nodejs \
     npm
 
-# PHP extensions
+# Install PHP extensions
 RUN docker-php-ext-install pdo pdo_pgsql zip
 
-# Composer
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Working directory
 WORKDIR /var/www
 
-# Copy dependency files first (better caching)
-COPY composer.json composer.lock ./
+# Copy full application first (important for artisan)
+COPY . .
+
+# Install PHP dependencies
 RUN composer install --optimize-autoloader
 
-COPY package.json package-lock.json ./
+# Install frontend dependencies
 RUN npm ci
-
-# Copy app
-COPY . .
 
 # Build frontend assets
 RUN npm run build
 
-# Fix Laravel permissions
+# Permissions
 RUN chmod -R 775 storage bootstrap/cache
 
-# Render port
+# Expose Render port
 EXPOSE 10000
 
-# Start app (NO seed for now)
+# Start Laravel
 CMD sh -c "php artisan migrate --force && php artisan optimize && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"
