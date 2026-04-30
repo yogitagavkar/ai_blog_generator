@@ -14,10 +14,10 @@ class DatabaseSeeder extends Seeder
         // Create or update user
         $user = User::updateOrCreate(
             [
-                'email' => 'test@example.com'
+                'email' => 'gavkaryogita@gmail.com'
             ],
             [
-                'name' => 'Test User',
+                'name' => 'Yogita',
                 'password' => Hash::make('password123'),
             ]
         );
