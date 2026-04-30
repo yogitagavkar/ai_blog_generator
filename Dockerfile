@@ -1,24 +1,42 @@
-FROM php:8.3-fpm
+FROM php:8.4-fpm
 
+# System dependencies + Node.js
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
-    libpq-dev \
+    curl \
     zip \
-    curl
+    libpq-dev \
+    libzip-dev \
+    nodejs \
+    npm
 
-RUN docker-php-ext-install pdo pdo_pgsql
+# PHP extensions
+RUN docker-php-ext-install pdo pdo_pgsql zip
 
+# Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# App directory
 WORKDIR /var/www
 
+# Copy project
 COPY . .
 
-RUN composer install --optimize-autoloader --no-dev
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
 
-RUN php artisan config:cache
-RUN php artisan route:cache
-RUN php artisan view:cache
+# Install frontend dependencies
+RUN npm ci
 
-CMD php artisan serve --host=0.0.0.0 --port=$PORT
+# Build frontend assets
+RUN npm run build
+
+# Expose Render port
+EXPOSE 10000
+
+# Start app + migrate + optimize
+CMD php artisan migrate --force && \
+    php artisan db:seed --force && \
+    php artisan optimize && \
+    php artisan serve --host=0.0.0.0 --port=$PORT
