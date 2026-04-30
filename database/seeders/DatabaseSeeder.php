@@ -17,28 +17,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::factory()->create([
-    'name' => 'Yogita',
-    'email' => 'gavkaryogita@gmail.com',
-    'password' => Hash::make('password123'),
-]);
+        User::create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => Hash::make('password123'),
+        ]);
 
         BlogGeneration::create([
             'user_id' => $user->id,
             'topic' => 'Laravel OpenAI Integration',
-            'keywords' => 'laravel, openai, api, ai',
+            'keywords' => 'laravel,openai,api',
             'tone' => 'Professional',
             'audience' => 'Developers',
             'generated_titles' => json_encode([
-                'Top Laravel OpenAI Integration Ideas',
-                'How to Build AI Apps with Laravel',
-                'Laravel OpenAI Complete Guide',
-                'Best Laravel AI Projects for Developers',
-                'OpenAI API Integration in Laravel'
+                'Top Laravel AI Integration Ideas',
+                'Laravel OpenAI Complete Guide'
             ]),
-            'meta_description' => 'Learn how to integrate OpenAI with Laravel applications.',
-            'status' => 'completed',
-            'tokens_used' => 250
+            'meta_description' => 'Learn Laravel AI integration'
         ]);
     }
 }
