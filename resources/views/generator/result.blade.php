@@ -1,17 +1,34 @@
-<div class="bg-white p-6 rounded shadow mt-6">
+@if(!empty($titles))
 
-    <h2 class="text-lg font-bold mb-4">
-        Generated Titles
-    </h2>
+<div class="bg-white rounded-2xl shadow-xl border border-gray-100 mt-8 p-8">
 
-    @foreach($titles as $title)
-        <div class="border-b py-2 flex justify-between">
-            <span>{{ $title }}</span>
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">
+            Generated Titles
+        </h2>
+    </div>
 
-             <button class="bg-blue text-black px-4 py-2 rounded">
-                Copy
-            </button>
-        </div>
-    @endforeach
+    <div class="space-y-4">
+
+        @foreach($titles as $title)
+            <div class="flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:bg-gray-50">
+
+                <span class="text-gray-700 font-medium">
+                    {{ $title }}
+                </span>
+
+                <button
+                    onclick="navigator.clipboard.writeText('{{ $title }}')"
+                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm">
+
+                    Copy
+                </button>
+
+            </div>
+        @endforeach
+
+    </div>
 
 </div>
+
+@endif
