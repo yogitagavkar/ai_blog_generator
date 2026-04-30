@@ -35,6 +35,8 @@ RUN npm run build
 # Expose application port
 EXPOSE 10000
 
+RUN chmod -R 775 storage bootstrap/cache
+
 # Start application
 CMD php artisan migrate --force; \
     php artisan db:seed --force; \
