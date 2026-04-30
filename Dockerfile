@@ -1,6 +1,6 @@
 FROM php:8.4-fpm
 
-# System dependencies + Node.js
+# Install system dependencies + Node.js
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -11,16 +11,16 @@ RUN apt-get update && apt-get install -y \
     nodejs \
     npm
 
-# PHP extensions
+# Install PHP extensions
 RUN docker-php-ext-install pdo pdo_pgsql zip
 
-# Composer
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# App directory
+# Set working directory
 WORKDIR /var/www
 
-# Copy project
+# Copy application code
 COPY . .
 
 # Install PHP dependencies
@@ -32,10 +32,10 @@ RUN npm ci
 # Build frontend assets
 RUN npm run build
 
-# Expose Render port
+# Expose application port
 EXPOSE 10000
 
-# Start app + migrate + optimize
+# Start application
 CMD php artisan migrate --force && \
     php artisan db:seed --force && \
     php artisan optimize && \
